@@ -1,44 +1,49 @@
 {% extends 'store/main.html' %}
 {% load static %}
+
+<head>
+    <!-- Add the CSS here -->
+    <style>
+        .price-wrapper {
+            display: inline-block;
+            float: right;
+            margin: 0 5px;
+        }
+        .price-wrapper .currency {
+            font-size: medium;
+        }
+        .action-buttons {
+            margin: 0 5px;
+        }
+        .action-buttons .btn {
+            margin: 5px;
+        }
+    </style>
+</head>
+
 {% block content %}
 <div class="row">
-    <div class="col-lg-4">
+    {% for product in products %}
+    <div class="col-lg-4 mb-4">
         <img class="thumbnail" src="{% static 'images/2+placeholder.png' %}">
         <div class="box-element product">
-            <h6><strong>Product</strong></h6>
+            <h6><strong>{{product.name}}</strong></h6>
             <hr>
 
-            <button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
-            <a class="btn btn-outline-success" href="#">View</a>
-            <h4 style="display: inline-block; float: right"><strong>$20</strong></h4>
+            <div class="price-wrapper">
+                <strong>
+                    <span class="currency">₹</span>
+                    <span class="price">{{product.price | floatformat:2}}</span>
+                </strong>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-outline-secondary add-btn">Add to Cart</button>
+                <a class="btn btn-outline-success" href="#">View</a>
+            </div>
 
         </div>
     </div>
-
-    <div class="col-lg-4">
-        <img class="thumbnail" src="{% static 'images/2+placeholder.png' %}">
-        <div class="box-element product">
-            <h6><strong>Product</strong></h6>
-            <hr>
-            
-            <button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
-            <a class="btn btn-outline-success" href="#">View</a>
-            <h4 style="display: inline-block; float: right"><strong>$20</strong></h4>
-            
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <img class="thumbnail" src="{% static 'images/2+placeholder.png' %}">
-        <div class="box-element product">
-            <h6><strong>Product</strong></h6>
-            <hr>
-
-            <button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
-            <a class="btn btn-outline-success" href="#">View</a>
-            <h4 style="display: inline-block; float: right"><strong>$20</strong></h4>
-
-        </div>
-    </div>
+    {% endfor %}
 </div>
 {% endblock content %}
