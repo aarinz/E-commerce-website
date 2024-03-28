@@ -125,7 +125,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'ecom', 'static')  
 ]
 
-
+MEDIA_URL = '/ecom/media/' 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'ecom', 'static', 'images')
 
 
 # Default primary key field type

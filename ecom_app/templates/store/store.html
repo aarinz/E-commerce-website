@@ -2,11 +2,9 @@
 {% load static %}
 
 <head>
-    <!-- Add the CSS here -->
     <style>
         .price-wrapper {
             display: inline-block;
-            float: right;
             margin: 0 5px;
         }
         .price-wrapper .currency {
@@ -25,7 +23,7 @@
 <div class="row">
     {% for product in products %}
     <div class="col-lg-4 mb-4">
-        <img class="thumbnail" src="{% static 'images/2+placeholder.png' %}">
+        <img class="thumbnail" src="{{product.imageURL}}">
         <div class="box-element product">
             <h6><strong>{{product.name}}</strong></h6>
             <hr>
