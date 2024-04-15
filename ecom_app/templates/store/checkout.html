@@ -91,34 +91,93 @@
         submitFormData()
     })
 
-    function submitFormData(){
-        console.log('Payment button clicked')
+    function submitFormData() {
+    console.log('Payment button clicked');
 
-        var userFormData = {
-            'name':  null,
-            'email': null,
-            'total': null,
-        }
+    
+    var userFormData = {
+        'name': null,
+        'email': null,
+        'total': null,
+        'items': []  
+    };
 
-        var shippingInfo = {
-            'address': null,
-            'city':  null,
-            'state': null,
-            'zipcode': null,
-        }
+    
+    var shippingInfo = {
+        'address': null,
+        'city': null,
+        'state': null,
+        'zipcode': null
+    };
 
-        if(shipping != 'False'){
-        shippingInfo.address = form.address.value
-        shippingInfo.city = form.city.value
-        shippingInfo.state = form.state.value
-        shippingInfo.zipcode = form.zipcode.value
-        }
-
-        if(user == 'AnonymousUser'){
-        userFormData.name = form.name.value
-        userFormData.email = form.email.value
-        }
+    
+    if (shipping !== 'False') {
+        shippingInfo.address = form.address.value;
+        shippingInfo.city = form.city.value;
+        shippingInfo.state = form.state.value;
+        shippingInfo.zipcode = form.zipcode.value;
     }
+
+  
+    if (user === 'AnonymousUser') {
+        userFormData.name = form.name.value;
+        userFormData.email = form.email.value;
+    }
+
+  
+    var cartRows = document.querySelectorAll('.cart-row');
+    cartRows.forEach(function(row) {
+        var item = {
+            'name': row.querySelector('p').textContent,
+            'price': row.querySelector('.row-image').getAttribute('src'),
+            'quantity': row.querySelector('p:last-child').textContent.replace('x', '')
+        };
+        userFormData.items.push(item);
+    });
+
+    
+    userFormData.total = total;
+
+    // Displaying data in console
+    console.log('Order Items:');
+    userFormData.items.forEach(function(item) {
+        console.log('Name:', item.name);
+        console.log('Price:', item.price);
+        console.log('Quantity:', item.quantity);
+    });
+
+    console.log('User Details:');
+    console.log('Name:', userFormData.name);
+    console.log('Email:', userFormData.email);
+
+    if (shipping !== 'False') {
+        console.log('Shipping Address:');
+        console.log('Address:', shippingInfo.address);
+        console.log('City:', shippingInfo.city);
+        console.log('State:', shippingInfo.state);
+        console.log('Zipcode:', shippingInfo.zipcode);
+    }
+
+    
+    var url = '/process_order/';
+    fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({ 'form': userFormData, 'shipping': shippingInfo })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Success:', data);
+            alert('Transaction completed');
+            window.location.href = "{% url 'store' %}";
+        });
+}
+
+
+
     
 </script>
 

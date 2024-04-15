@@ -2,6 +2,8 @@ from django.shortcuts import render
 from .models import *
 from django.http import JsonResponse
 import json
+import datetime
+
 
 def store(request):
 
@@ -74,6 +76,11 @@ def updateItem(request):
     if orderItem.quantity <=0:
         orderItem.delete()
 
-
-
     return JsonResponse('item was added', safe=False)
+
+#from django.views.decorators.csrf import csrf_exempt
+
+#@csrf_exempt
+def processOrder(request):
+    print('Data:', request.body)
+    return JsonResponse('Payment Complete!', safe=False)
