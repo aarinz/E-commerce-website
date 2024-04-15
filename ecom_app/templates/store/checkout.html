@@ -57,9 +57,9 @@
             {% for item in items %}
             <div class="cart-row">
                 <div style="flex:2"><img class="row-image" src="{{item.product.imageURL}}"></div>
-                <div style="flex:2"><p>{{item.product.name}}</p></div>
-                <div style="flex:1"><p>${{item.product.price|floatformat:2}}</p></div>
-                <div style="flex:1"><p>x{{item.quantity}}</p></div>
+                <div style="flex:2" class="item-name">{{item.product.name}}</div>
+                <div style="flex:1" class="item-price">₹{{item.product.price|floatformat:2}}</div>
+                <div style="flex:1" class="item-quantity">x{{item.quantity}}</div>
             </div>
             {% endfor %}
             <h5>Items:   {{order.get_cart_items}}</h5>
@@ -94,15 +94,13 @@
     function submitFormData() {
     console.log('Payment button clicked');
 
-    
     var userFormData = {
-        'name': null,
-        'email': null,
+        'name': form.name.value,
+        'email': form.email.value,
         'total': null,
-        'items': []  
+        'items': []
     };
 
-    
     var shippingInfo = {
         'address': null,
         'city': null,
@@ -110,7 +108,6 @@
         'zipcode': null
     };
 
-    
     if (shipping !== 'False') {
         shippingInfo.address = form.address.value;
         shippingInfo.city = form.city.value;
@@ -118,27 +115,22 @@
         shippingInfo.zipcode = form.zipcode.value;
     }
 
-  
-    if (user === 'AnonymousUser') {
-        userFormData.name = form.name.value;
-        userFormData.email = form.email.value;
-    }
-
-  
     var cartRows = document.querySelectorAll('.cart-row');
     cartRows.forEach(function(row) {
-        var item = {
-            'name': row.querySelector('p').textContent,
-            'price': row.querySelector('.row-image').getAttribute('src'),
-            'quantity': row.querySelector('p:last-child').textContent.replace('x', '')
-        };
-        userFormData.items.push(item);
+        var itemName = row.querySelector('.item-name').textContent; // Retrieve item name
+        var itemPrice = row.querySelector('.item-price').textContent; // Retrieve item price
+        var itemQuantity = row.querySelector('.item-quantity').textContent; // Retrieve item quantity
+
+        // Push item details into userFormData
+        userFormData.items.push({
+            'name': itemName,
+            'price': parseFloat(itemPrice.replace('₹', '').trim()), // Remove currency symbol and trim whitespace
+            'quantity': parseInt(itemQuantity.replace('x', '').trim()) // Remove 'x' and trim whitespace
+        });
     });
 
-    
     userFormData.total = total;
 
-    // Displaying data in console
     console.log('Order Items:');
     userFormData.items.forEach(function(item) {
         console.log('Name:', item.name);
@@ -158,27 +150,31 @@
         console.log('Zipcode:', shippingInfo.zipcode);
     }
 
-    
     var url = '/process_order/';
     fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            body: JSON.stringify({ 'form': userFormData, 'shipping': shippingInfo })
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log('Success:', data);
-            alert('Transaction completed');
-            window.location.href = "{% url 'store' %}";
-        });
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({ 'form': userFormData, 'shipping': shippingInfo })
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        console.log('Success:', data);
+        alert('Transaction completed');
+        window.location.href = "{% url 'store' %}";
+    });
 }
 
 
 
-    
+
+
+
+ 
+ 
+
 </script>
 
 
